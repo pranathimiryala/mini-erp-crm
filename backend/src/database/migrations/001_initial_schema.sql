@@ -59,8 +59,7 @@ CREATE TABLE customers (
     INDEX idx_customers_name (customer_name),
     INDEX idx_customers_mobile (mobile_number),
     INDEX idx_customers_followup (follow_up_date),
-    FULLTEXT INDEX ft_customers_search (customer_name, business_name, mobile_number, email),
-    
+        
     CONSTRAINT fk_customers_created_by FOREIGN KEY (created_by) 
         REFERENCES users(id) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -110,7 +109,6 @@ CREATE TABLE products (
     INDEX idx_products_category (category),
     INDEX idx_products_name (product_name),
     INDEX idx_products_stock (current_stock, min_stock_alert),
-    FULLTEXT INDEX ft_products_search (product_name, sku, category),
     
     CONSTRAINT chk_products_price CHECK (unit_price >= 0),
     CONSTRAINT chk_products_stock CHECK (current_stock >= 0),

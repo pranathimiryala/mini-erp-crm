@@ -7,6 +7,7 @@ import LoadingSpinner from '../common/LoadingSpinner';
 import Pagination from '../common/Pagination';
 import Modal from '../common/Modal';
 import { FiPlus, FiSearch, FiEdit2, FiTrash2, FiEye, FiPhone, FiMail } from 'react-icons/fi';
+import { FiUsers } from 'react-icons/fi';
 
 const CustomersList: React.FC = () => {
   const [customers, setCustomers] = useState<Customer[]>([]);

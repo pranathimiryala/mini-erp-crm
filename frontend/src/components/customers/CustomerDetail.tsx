@@ -14,7 +14,7 @@ const CustomerDetail: React.FC = () => {
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [loading, setLoading] = useState(true);
   const [showFollowUpModal, setShowFollowUpModal] = useState(false);
-  const [followUpData, setFollowUpData] = useState({ follow_up_date: '', notes: '', status: 'Pending' });
+  const [followUpData, setFollowUpData] = useState<Partial<FollowUp>>({ follow_up_date: '', notes: '', status: 'Pending' });
   const [savingFollowUp, setSavingFollowUp] = useState(false);
 
   useEffect(() => {
@@ -198,13 +198,17 @@ const CustomerDetail: React.FC = () => {
         <div className="form-group">
           <label>Notes *</label>
           <textarea className="form-control" value={followUpData.notes} rows={4}
-            onChange={(e) => setFollowUpData({ ...followUpData, notes: e.target.value })}
-            placeholder="Enter follow-up notes..." />
+            onChange={(e) =>
+  setFollowUpData({
+    ...followUpData,
+    status: e.target.value as FollowUp['status'],
+  })
+}            placeholder="Enter follow-up notes..." />
         </div>
         <div className="form-group">
           <label>Status</label>
           <select className="form-control" value={followUpData.status}
-            onChange={(e) => setFollowUpData({ ...followUpData, status: e.target.value })}>
+            onChange={(e) => setFollowUpData({ ...followUpData, status: e.target.value as 'Pending' | 'Completed' | 'Cancelled' })}>
             <option value="Pending">Pending</option>
             <option value="Completed">Completed</option>
             <option value="Cancelled">Cancelled</option>
