@@ -5,7 +5,7 @@ import morgan from 'morgan';
 import dotenv from 'dotenv';
 
 import { config } from './config';
-import { testConnection } from './config/database';
+import pool, { testConnection } from './config/database';
 import { errorHandler, notFoundHandler } from './middleware/error.middleware';
 
 // Import routes
@@ -51,9 +51,6 @@ app.use('/api/challans', challanRoutes);
 // Dashboard stats endpoint
 app.get('/api/dashboard/stats', async (req, res, next) => {
   try {
-    const pool = (await import('./config/database')).default;
-    const { RowDataPacket } = await import('mysql2');
-
     const [customerCount] = await pool.execute('SELECT COUNT(*) as count FROM customers');
     const [productCount] = await pool.execute('SELECT COUNT(*) as count FROM products WHERE is_active = TRUE');
     const [lowStockCount] = await pool.execute('SELECT COUNT(*) as count FROM products WHERE current_stock <= min_stock_alert AND is_active = TRUE');

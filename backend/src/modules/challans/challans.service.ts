@@ -6,6 +6,22 @@ import { RowDataPacket, ResultSetHeader } from 'mysql2';
 interface ChallanItem {
   product_id: number;
   quantity: number;
+
+  product_name_snapshot?: string;
+  sku_snapshot?: string;
+  unit_price_snapshot?: number;
+  category_snapshot?: string;
+}
+
+interface Challan extends RowDataPacket {
+  id: number;
+  challan_number: string;
+  customer_id: number;
+  status: 'Draft' | 'Confirmed' | 'Cancelled';
+  notes: string | null;
+  total_quantity: number;
+  total_amount: number;
+  items: RowDataPacket[];
 }
 
 export class ChallanService {
@@ -60,7 +76,7 @@ export class ChallanService {
     return { data: rows, total, page, limit };
   }
 
-  async getById(id: number) {
+  async getById(id: number): Promise<Challan> {
     const [rows] = await pool.execute<RowDataPacket[]>(
       `SELECT ch.*, c.customer_name, c.business_name, c.mobile_number as customer_mobile,
        c.email as customer_email, c.gst_number as customer_gst, u.full_name as created_by_name 
@@ -85,7 +101,7 @@ export class ChallanService {
       [id]
     );
 
-    return { ...rows[0], items };
+    return { ...(rows[0] as Challan), items};
   }
 
   async create(data: any, userId: number) {

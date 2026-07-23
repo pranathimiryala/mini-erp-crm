@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+import jwt, { Secret, SignOptions } from 'jsonwebtoken';
 import pool from '../../config/database';
 import { config } from '../../config';
 import { UnauthorizedError, ConflictError, NotFoundError } from '../../utils/AppError';
@@ -10,9 +10,19 @@ interface User extends RowDataPacket {
   username: string;
   email: string;
   password_hash: string;
-  full_name: string;
+ full_name: string;
   role: string;
   is_active: boolean;
+}
+
+interface ChallanItem {
+  product_id: number;
+  quantity: number;
+
+  product_name_snapshot?: string;
+  sku_snapshot?: string;
+  unit_price_snapshot?: number;
+  category_snapshot?: string;
 }
 
 export class AuthService {
@@ -102,15 +112,19 @@ export class AuthService {
   }
 
   private generateToken(user: User): string {
-    return jwt.sign(
-      {
-        id: user.id,
-        username: user.username,
-        email: user.email,
-        role: user.role,
-      },
-      config.jwt.secret,
-      { expiresIn: config.jwt.expiresIn as string }
-    );
-  }
+  const payload = {
+    id: user.id,
+    username: user.username,
+    email: user.email,
+    role: user.role,
+  };
+
+  const secret: Secret = config.jwt.secret;
+
+  const options: SignOptions = {
+    expiresIn: config.jwt.expiresIn as SignOptions["expiresIn"],
+  };
+
+  return jwt.sign(payload, secret, options);
+}
 }
