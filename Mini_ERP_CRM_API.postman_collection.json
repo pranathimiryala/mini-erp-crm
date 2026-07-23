@@ -1,0 +1,272 @@
+{
+  "info": {
+    "name": "Mini ERP + CRM API",
+    "description": "Complete API collection for Mini ERP + CRM Operations Portal",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:5000/api" },
+    { "key": "token", "value": "" }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login (Admin)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/auth/login",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"username\": \"admin\", \"password\": \"Password@123\" }"
+            }
+          },
+          "event": [{
+            "listen": "test",
+            "script": {
+              "exec": ["var jsonData = pm.response.json();", "if(jsonData.data && jsonData.data.token) { pm.collectionVariables.set('token', jsonData.data.token); }"]
+            }
+          }]
+        },
+        {
+          "name": "Login (Sales)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/auth/login",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"username\": \"sales1\", \"password\": \"Password@123\" }"
+            }
+          }
+        },
+        {
+          "name": "Get Current User",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/auth/me"
+          }
+        },
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/auth/register",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"username\": \"newuser\", \"email\": \"new@erp.com\", \"password\": \"Password@123\", \"full_name\": \"New User\", \"role\": \"Sales\" }"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Customers",
+      "item": [
+        {
+          "name": "List Customers",
+          "request": { "method": "GET", "url": "{{base_url}}/customers?page=1&limit=10" }
+        },
+        {
+          "name": "Search Customers",
+          "request": { "method": "GET", "url": "{{base_url}}/customers?search=tech&status=Active" }
+        },
+        {
+          "name": "Get Customer by ID",
+          "request": { "method": "GET", "url": "{{base_url}}/customers/1" }
+        },
+        {
+          "name": "Create Customer",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/customers",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"customer_name\": \"Test Customer\", \"mobile_number\": \"9876543215\", \"email\": \"test@example.com\", \"business_name\": \"Test Corp\", \"customer_type\": \"Wholesale\", \"status\": \"Lead\", \"city\": \"Mumbai\", \"state\": \"Maharashtra\" }"
+            }
+          }
+        },
+        {
+          "name": "Update Customer",
+          "request": {
+            "method": "PUT",
+            "url": "{{base_url}}/customers/1",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"status\": \"Active\", \"notes\": \"Updated via API\" }"
+            }
+          }
+        },
+        {
+          "name": "Delete Customer",
+          "request": { "method": "DELETE", "url": "{{base_url}}/customers/1" }
+        },
+        {
+          "name": "Add Follow-up",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/customers/1/followups",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"follow_up_date\": \"2026-08-01\", \"notes\": \"Follow up on pricing discussion\", \"status\": \"Pending\" }"
+            }
+          }
+        },
+        {
+          "name": "Get Follow-ups",
+          "request": { "method": "GET", "url": "{{base_url}}/customers/1/followups" }
+        }
+      ]
+    },
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "List Products",
+          "request": { "method": "GET", "url": "{{base_url}}/products?page=1&limit=10" }
+        },
+        {
+          "name": "Get Product by ID",
+          "request": { "method": "GET", "url": "{{base_url}}/products/1" }
+        },
+        {
+          "name": "Create Product",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/products",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"product_name\": \"Test Product\", \"sku\": \"TEST-001\", \"category\": \"Electronics\", \"unit_price\": 1500, \"current_stock\": 100, \"min_stock_alert\": 20, \"location_warehouse\": \"Main Warehouse\" }"
+            }
+          }
+        },
+        {
+          "name": "Update Product",
+          "request": {
+            "method": "PUT",
+            "url": "{{base_url}}/products/1",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"unit_price\": 52000, \"min_stock_alert\": 15 }"
+            }
+          }
+        },
+        {
+          "name": "Get Low Stock Products",
+          "request": { "method": "GET", "url": "{{base_url}}/products/low-stock" }
+        },
+        {
+          "name": "Get Categories",
+          "request": { "method": "GET", "url": "{{base_url}}/products/categories" }
+        }
+      ]
+    },
+    {
+      "name": "Inventory",
+      "item": [
+        {
+          "name": "List Stock Movements",
+          "request": { "method": "GET", "url": "{{base_url}}/inventory/movements?page=1&limit=10" }
+        },
+        {
+          "name": "Record Stock IN",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/inventory/movements",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"product_id\": 1, \"quantity_changed\": 50, \"movement_type\": \"IN\", \"reason\": \"Purchase order received\" }"
+            }
+          }
+        },
+        {
+          "name": "Record Stock OUT",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/inventory/movements",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"product_id\": 1, \"quantity_changed\": 5, \"movement_type\": \"OUT\", \"reason\": \"Damaged goods\" }"
+            }
+          }
+        },
+        {
+          "name": "Get Product Movements",
+          "request": { "method": "GET", "url": "{{base_url}}/inventory/movements/1" }
+        }
+      ]
+    },
+    {
+      "name": "Challans",
+      "item": [
+        {
+          "name": "List Challans",
+          "request": { "method": "GET", "url": "{{base_url}}/challans?page=1&limit=10" }
+        },
+        {
+          "name": "Get Challan by ID",
+          "request": { "method": "GET", "url": "{{base_url}}/challans/1" }
+        },
+        {
+          "name": "Create Challan (Draft)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/challans",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"customer_id\": 1, \"items\": [{ \"product_id\": 1, \"quantity\": 2 }, { \"product_id\": 3, \"quantity\": 5 }], \"status\": \"Draft\", \"notes\": \"Test challan\" }"
+            }
+          }
+        },
+        {
+          "name": "Create Challan (Confirmed)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/challans",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"customer_id\": 2, \"items\": [{ \"product_id\": 5, \"quantity\": 10 }], \"status\": \"Confirmed\" }"
+            }
+          }
+        },
+        {
+          "name": "Confirm Challan",
+          "request": { "method": "PATCH", "url": "{{base_url}}/challans/1/confirm" }
+        },
+        {
+          "name": "Cancel Challan",
+          "request": { "method": "PATCH", "url": "{{base_url}}/challans/1/cancel" }
+        }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "item": [
+        {
+          "name": "Get Dashboard Stats",
+          "request": { "method": "GET", "url": "{{base_url}}/dashboard/stats" }
+        },
+        {
+          "name": "Health Check",
+          "request": { "method": "GET", "url": "{{base_url}}/health" }
+        }
+      ]
+    }
+  ]
+}
